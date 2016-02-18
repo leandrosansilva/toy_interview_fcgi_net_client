@@ -4,7 +4,7 @@ include(ExternalProject)
 
 cmake_minimum_required(VERSION 2.6)
 
-add_definitions(-std=c++11 -Wall -Wextra)
+add_definitions(-std=c++11 -Wall -Wextra -DDBUS_API_SUBJECT_TO_CHANGE)
 
 set(DEPS_INSTALL_DIR ${CMAKE_BINARY_DIR}/3rd)
 
@@ -12,6 +12,7 @@ include_directories(
   ${CMAKE_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_SOURCE_DIR}/3rd/cereal/include
+  ${DEPS_INSTALL_DIR}/lib/include/dbus-c++-1 
 )
 
 execute_process(COMMAND git submodule update --init --recursive)
@@ -31,11 +32,9 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-  dbus-cxx
-  SVN_REPOSITORY svn://svn.code.sf.net/p/dbus-cxx/code/trunk/dbus-cxx
-  CONFIGURE_COMMAND ./autogen.sh && ./configure --prefix=${DEPS_INSTALL_DIR} --enable-tools --disable-shared
-  BUILD_COMMAND test -e stamp || make && echo > stamp
-  UPDATE_DISCONNECTED 1
+  dbus-cpp
+  SOURCE_DIR ${CMAKE_SOURCE_DIR}/3rd/dbus-cplusplus
+  CONFIGURE_COMMAND ./autogen.sh && ./configure --prefix=${DEPS_INSTALL_DIR} --disable-shared --enable-shared
   BUILD_IN_SOURCE 1
 )
 
