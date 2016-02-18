@@ -33,7 +33,7 @@ ExternalProject_Add(
 ExternalProject_Add(
   dbus-cxx
   SVN_REPOSITORY svn://svn.code.sf.net/p/dbus-cxx/code/trunk/dbus-cxx
-  CONFIGURE_COMMAND ./autogen.sh && ./configure --prefix=${DEPS_INSTALL_DIR}
+  CONFIGURE_COMMAND ./autogen.sh && ./configure --prefix=${DEPS_INSTALL_DIR} --enable-tools --disable-shared
   BUILD_COMMAND test -e stamp || make && echo > stamp
   UPDATE_DISCONNECTED 1
   BUILD_IN_SOURCE 1

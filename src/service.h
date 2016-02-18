@@ -57,6 +57,13 @@ struct service
   {
     return to_response(get_information(), request);
   }
+
+  void register_to_server(FastCGIServer &server)
+  {
+    server.request_handler(*this, &service::request_handler);
+    server.data_handler(*this, &service::data_handler);
+    server.complete_handler(*this, &service::complete_handler);
+  }
 };
 
 }
