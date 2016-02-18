@@ -38,6 +38,17 @@ ExternalProject_Add(
   BUILD_IN_SOURCE 1
 )
 
+add_custom_command(
+  OUTPUT dbus-nm-stubs-generated.txt
+  COMMAND 
+    ${CMAKE_SOURCE_DIR}/tools/generate_dbus_stubs.sh 
+    ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/3rd/NetworkManager/introspection/
+    nm
+  DEPENDS dbus-cpp
+)
+
+add_custom_target(dbus-nm-stubs-generated ALL DEPENDS dbus-nm-stubs-generated.txt)
+
 include_directories(${DEPS_INSTALL_DIR}/include)
 link_directories(${DEPS_INSTALL_DIR}/lib)
 
