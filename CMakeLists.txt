@@ -12,7 +12,7 @@ include_directories(
   ${CMAKE_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_SOURCE_DIR}/3rd/cereal/include
-  ${DEPS_INSTALL_DIR}/lib/include/dbus-c++-1 
+  ${DEPS_INSTALL_DIR}/include/dbus-c++-1 
 )
 
 execute_process(COMMAND git submodule update --init --recursive)
@@ -31,10 +31,14 @@ ExternalProject_Add(
     -DCMAKE_INSTALL_PREFIX=${DEPS_INSTALL_DIR}
 )
 
+set(DBUS_CPP_LIBS -ldbus-c++-1 -ldbus-1)
+
 ExternalProject_Add(
   dbus-cpp
   SOURCE_DIR ${CMAKE_SOURCE_DIR}/3rd/dbus-cplusplus
-  CONFIGURE_COMMAND ./autogen.sh && ./configure --prefix=${DEPS_INSTALL_DIR} --disable-shared --enable-shared
+  CONFIGURE_COMMAND 
+    ./autogen.sh && ./configure --prefix=${DEPS_INSTALL_DIR} --disable-shared --enable-static
+    --enable-debug
   BUILD_IN_SOURCE 1
 )
 

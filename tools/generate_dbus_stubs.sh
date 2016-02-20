@@ -17,7 +17,9 @@ TPL_FILE=$SOURCE_DIR/3rd/dbus-cplusplus/tools/proxy-stubs.tpl
 for XML_FILE in $XML_DIR/*.xml; do
   BASENAME=$(basename $XML_FILE)
   H_FILE=$STUBS_DIR/$PREFIX/${BASENAME%.*}.h
-  $XML2CPP $XML_FILE --proxy=$H_FILE --proxy-template=$SOURCE_DIR/3rd/dbus-cplusplus/tools/proxy-stubs.tpl
+  $XML2CPP $XML_FILE --proxy=$H_FILE \
+    --proxy-template=$SOURCE_DIR/3rd/dbus-cplusplus/tools/proxy-stubs.tpl \
+    --sync --noasync
   echo Generated D-bus stub file $PREFIX/${BASENAME%.*}.h
 done
 
