@@ -1,0 +1,10 @@
+nginx:
+  image: nginx
+  volumes:
+    - $NGINX_CONF:/etc/nginx/nginx.conf:ro
+    - /tmp/:/server:rw
+
+ifnc:
+  image: leandrosansilva/ifnc
+  volumes:
+    - /tmp/:/server:rw

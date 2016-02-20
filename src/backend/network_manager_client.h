@@ -145,15 +145,14 @@ public:
 
     std::transform(std::begin(conns), std::end(conns), std::back_inserter(info), 
       [this](const std::string &path) {
+        ifnc::dto::interface_information i_info;
+
         details::ActiveConnection conn(_dbus, path);
         details::IP4Config ip4_config(_dbus, conn.Ip4Config());
         details::IP6Config ip6_config(_dbus, conn.Ip6Config());
-        
-        // FIXME: is it possible to return zero or more than one interface?
-        std::string name = details::Device(_dbus, conn.Devices()[0]).InterfaceName();
 
-        ifnc::dto::interface_information i_info;
-        i_info.name = name;
+        // FIXME: is it possible to return zero or more than one interface?
+        i_info.name = details::Device(_dbus, conn.Devices()[0]).InterfaceName();
 
         i_info.ipv4.gateway = ip4_config.Gateway();
         i_info.ipv6.gateway = ip6_config.Gateway();
@@ -168,19 +167,11 @@ public:
             return ss.str();
           };
 
-        std::transform(
-          std::begin(ipv4_addresses),
-          std::end(ipv4_addresses),
-          std::back_inserter(i_info.ipv4.addresses),
-          transform_address
-        );
+        std::transform(std::begin(ipv4_addresses), std::end(ipv4_addresses),
+          std::back_inserter(i_info.ipv4.addresses), transform_address);
 
-        std::transform(
-          std::begin(ipv6_addresses),
-          std::end(ipv6_addresses),
-          std::back_inserter(i_info.ipv6.addresses),
-          transform_address
-        );
+        std::transform(std::begin(ipv6_addresses), std::end(ipv6_addresses),
+          std::back_inserter(i_info.ipv6.addresses), transform_address);
 
         return i_info;
       }

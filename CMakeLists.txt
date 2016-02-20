@@ -46,7 +46,7 @@ add_custom_command(
   OUTPUT dbus-nm-stubs-generated.txt
   COMMAND 
     ${CMAKE_SOURCE_DIR}/tools/generate_dbus_stubs.sh 
-    ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/3rd/NetworkManager/introspection/
+    ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/3rd/network_manager_introspection_data/
     nm
   DEPENDS dbus-cpp
 )

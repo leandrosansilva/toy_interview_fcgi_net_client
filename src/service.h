@@ -5,6 +5,8 @@
 #include <cereal/archives/json.hpp>
 #include <sstream>
 #include <string>
+#include <chrono>
+#include <thread>
 
 #include <backend/network_client.h>
 #include <serialization/info.h>
@@ -12,14 +14,14 @@
 namespace ifnc {
 
 template<typename T>
-inline int to_response(const T &t, FastCGIRequest &request)
+inline int to_response(const T &t, const char *name, FastCGIRequest &request)
 {
   request.out.append("Content-Type: application/json\r\n\r\n");
 
-  std::ostringstream ss; 
+  std::ostringstream ss;
   {
     cereal::JSONOutputArchive archive(ss);
-    archive(cereal::make_nvp("information", t));
+    archive(cereal::make_nvp(name, t));
   }
 
   request.out.append(ss.str());
@@ -49,13 +51,18 @@ struct service
 
   int data_handler(FastCGIRequest &request)
   {
-    std::cout << "data" << std::endl;
     return 0;
   }
 
   int complete_handler(FastCGIRequest &request)
   {
-    return to_response(get_information(), request);
+    try {
+      return to_response(get_information(), "information", request);
+    } catch (const std::exception &e) {
+      return to_response(std::string(e.what()), "error", request);
+    } catch (...) {
+      return to_response(std::string("Unknown error"), "error", request);
+    }
   }
 
   void register_to_server(FastCGIServer &server)
