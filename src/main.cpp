@@ -1,4 +1,5 @@
 #include <fcgicc.h>
+#include <thread>
 
 #include <service.h>
 #include <backend/network_client.h>
@@ -6,23 +7,27 @@
 
 DBus::BusDispatcher dispatcher;
 
-int main(int, char **)
+int main(int, char **argv)
 {
-  DBus::_init_threading();
+  std::string socket_filename = argv[1];
 
-  DBus::default_dispatcher = &dispatcher;
+  try {
+    DBus::_init_threading();
 
-	auto dbus_conn = DBus::Connection::SystemBus();   
+    DBus::default_dispatcher = &dispatcher;
 
-  ifnc::backend::network_manager_client nm_cli(dbus_conn);
+    auto dbus_conn = DBus::Connection::SystemBus();   
 
-  ifnc::service service(nm_cli);
+    ifnc::backend::network_manager_client nm_cli(dbus_conn);
 
-  FastCGIServer server;
+    ifnc::service service(nm_cli);
 
-  service.register_to_server(server);
-  server.listen("./socket");
-  server.listen(8089);
+    FastCGIServer server;
+    server.listen(socket_filename);
+    service.register_to_server(server);
+    server.process_forever();
 
-  server.process_forever();
+  } catch (const std::exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+  }
 }

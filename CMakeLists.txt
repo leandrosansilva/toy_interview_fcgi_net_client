@@ -26,9 +26,10 @@ ExternalProject_Add(
 
 ExternalProject_Add(
   fcgicc
-  URL http://althenia.net/files/fcgicc-0.1.3.tar.bz2
+  URL ${CMAKE_SOURCE_DIR}/3rd/fcgicc-0.1.3.tar.bz2
   CMAKE_ARGS 
     -DCMAKE_INSTALL_PREFIX=${DEPS_INSTALL_DIR}
+    -DCMAKE_BUILD_TYPE=Debug
 )
 
 set(DBUS_CPP_LIBS -ldbus-c++-1 -ldbus-1)

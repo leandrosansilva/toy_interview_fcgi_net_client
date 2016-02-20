@@ -13,9 +13,7 @@ TEST(Service, EmptyMessage)
 {
   backend_mock mock;
 
-  ifnc::dto::info mocked_information {
-    ifnc::dto::interface_information{"eth0", "192.168.1.123", "192.168.1.0", "192.168.1.1"}
-  };
+  ifnc::dto::info mocked_information {};
 
   EXPECT_CALL(mock, get_network_information())
     .WillOnce(Return(mocked_information));

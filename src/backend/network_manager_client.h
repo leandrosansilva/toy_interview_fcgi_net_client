@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <sstream>
 
 #include "network_client.h"
 
@@ -152,7 +153,13 @@ public:
         details::IP6Config ip6_config(_dbus, conn.Ip6Config());
 
         // FIXME: is it possible to return zero or more than one interface?
-        i_info.name = details::Device(_dbus, conn.Devices()[0]).InterfaceName();
+        auto devices = conn.Devices();
+
+        if (!devices.size()) {
+          throw std::runtime_error("Could not find device. This is a BUG");
+        }
+
+        i_info.name = details::Device(_dbus, devices[0]).InterfaceName();
 
         i_info.ipv4.gateway = ip4_config.Gateway();
         i_info.ipv6.gateway = ip6_config.Gateway();

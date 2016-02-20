@@ -1,10 +1,70 @@
 nginx:
   image: nginx
+  ports:
+    - 9999:80/tcp
   volumes:
+    - /tmp/s0:/s0:rw
+    - /tmp/s1:/s1:rw
+    - /tmp/s2:/s2:rw
+    - /tmp/s3:/s3:rw
+    - /tmp/s4:/s4:rw
+    - /tmp/s5:/s5:rw
+    - /tmp/s6:/s6:rw
+    - /tmp/s7:/s7:rw
     - $NGINX_CONF:/etc/nginx/nginx.conf:ro
-    - /tmp/:/server:rw
 
-ifnc:
+ifnc_0:
   image: leandrosansilva/ifnc
+  command: /s0/socket
   volumes:
-    - /tmp/:/server:rw
+    - /tmp/s0:/s0:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+ifnc_1:
+  image: leandrosansilva/ifnc
+  command: /s1/socket
+  volumes:
+    - /tmp/s1:/s1:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+ifnc_2:
+  image: leandrosansilva/ifnc
+  command: /s2/socket
+  volumes:
+    - /tmp/s2:/s2:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+ifnc_3:
+  image: leandrosansilva/ifnc
+  command: /s3/socket
+  volumes:
+    - /tmp/s3:/s3:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+ifnc_4:
+  image: leandrosansilva/ifnc
+  command: /s4/socket
+  volumes:
+    - /tmp/s4:/s4:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+ifnc_5:
+  image: leandrosansilva/ifnc
+  command: /s5/socket
+  volumes:
+    - /tmp/s5:/s5:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+ifnc_6:
+  image: leandrosansilva/ifnc
+  command: /s6/socket
+  volumes:
+    - /tmp/s6:/s6:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw
+
+ifnc_7:
+  image: leandrosansilva/ifnc
+  command: /s7/socket
+  volumes:
+    - /tmp/s7:/s7:rw
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:rw

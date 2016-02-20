@@ -14,19 +14,18 @@
 namespace ifnc {
 
 template<typename T>
-inline int to_response(const T &t, const char *name, FastCGIRequest &request)
+inline void to_response(const T &t, const char *name, std::string &out)
 {
-  request.out.append("Content-Type: application/json\r\n\r\n");
-
   std::ostringstream ss;
+
+  ss << "Content-Type: application/json\r\n\r\n";
+
   {
     cereal::JSONOutputArchive archive(ss);
     archive(cereal::make_nvp(name, t));
   }
 
-  request.out.append(ss.str());
-
-  return 0;
+  out.append(ss.str());
 }
 
 struct service
@@ -38,14 +37,10 @@ struct service
   {
   }
 
-  ifnc::dto::info get_information() const
-  {
-    return _client.get_network_information();
-  }
-
   int request_handler(FastCGIRequest &request)
   {
-    std::cout << "request: '" << request.params[std::string("REQUEST_URI")] << "'" << std::endl;
+    std::cout << request.in << std::endl;
+
     return 0;
   }
 
@@ -54,15 +49,24 @@ struct service
     return 0;
   }
 
-  int complete_handler(FastCGIRequest &request)
+  int handle_response(std::string &response)
   {
     try {
-      return to_response(get_information(), "information", request);
+      to_response(_client.get_network_information(), "information", response);
+      return 0;
     } catch (const std::exception &e) {
-      return to_response(std::string(e.what()), "error", request);
+      to_response(std::string(e.what()), "error", response);
+      return 1;
     } catch (...) {
-      return to_response(std::string("Unknown error"), "error", request);
     }
+
+    to_response(std::string("Unknown error"), "error", response);
+    return 1;
+  }
+
+  int complete_handler(FastCGIRequest &request)
+  {
+    return handle_response(request.out);
   }
 
   void register_to_server(FastCGIServer &server)
