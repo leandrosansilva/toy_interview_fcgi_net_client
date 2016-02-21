@@ -37,14 +37,12 @@ struct service
   {
   }
 
-  int request_handler(FastCGIRequest &request)
+  int request_handler(FastCGIRequest &)
   {
-    std::cout << request.in << std::endl;
-
     return 0;
   }
 
-  int data_handler(FastCGIRequest &request)
+  int data_handler(FastCGIRequest &)
   {
     return 0;
   }
@@ -58,10 +56,9 @@ struct service
       to_response(std::string(e.what()), "error", response);
       return 1;
     } catch (...) {
+			to_response(std::string("Unknown error"), "error", response);
+			return 1;
     }
-
-    to_response(std::string("Unknown error"), "error", response);
-    return 1;
   }
 
   int complete_handler(FastCGIRequest &request)
