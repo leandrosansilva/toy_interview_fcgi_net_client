@@ -138,6 +138,14 @@ public:
   {
   }
 
+  static std::string transform_address(std::map<std::string, DBus::Variant> d)
+  {
+    std::stringstream ss;
+    ss << (d["address"].operator std::string()) 
+       << "/" << uint32_t(d["prefix"]);
+    return ss.str();
+  };
+
   ifnc::dto::info get_network_information() override
   {
     ifnc::dto::info info;
@@ -152,9 +160,9 @@ public:
         details::IP4Config ip4_config(_dbus, conn.Ip4Config());
         details::IP6Config ip6_config(_dbus, conn.Ip6Config());
 
-        // FIXME: is it possible to return zero or more than one interface?
         auto devices = conn.Devices();
 
+        // FIXME: is it possible to return zero or more than one interface?
         if (!devices.size()) {
           throw std::runtime_error("Could not find device. This is a BUG");
         }
@@ -166,13 +174,6 @@ public:
 
         auto ipv4_addresses = ip4_config.AddressData();
         auto ipv6_addresses = ip6_config.AddressData();
-
-        auto transform_address = [](std::map<std::string, DBus::Variant> &d) {
-            std::stringstream ss;
-            ss << (d["address"].operator std::string()) 
-               << "/" << uint32_t(d["prefix"]);
-            return ss.str();
-          };
 
         std::transform(std::begin(ipv4_addresses), std::end(ipv4_addresses),
           std::back_inserter(i_info.ipv4.addresses), transform_address);

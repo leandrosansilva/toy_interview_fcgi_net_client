@@ -8,6 +8,8 @@ add_definitions(-std=c++11 -Wall -Wextra -DDBUS_API_SUBJECT_TO_CHANGE)
 
 set(DEPS_INSTALL_DIR ${CMAKE_BINARY_DIR}/3rd)
 
+enable_testing()
+
 include_directories(
   ${CMAKE_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src
